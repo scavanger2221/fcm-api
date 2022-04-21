@@ -1,29 +1,33 @@
 import {cert, initializeApp} from "firebase-admin/app";
-import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
+import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
-import {firebaseConfig} from "../../config/firebase.js";
+import {firebaseConfig} from "../../config/firebase";
 
-initializeApp({
-    credential:cert(firebaseConfig),
-});
+try {
+    initializeApp({
+        credential:cert(firebaseConfig),
+    });    
+} catch (error) {
+    alert(error);
+}
+
 
 const db = getFirestore();
 
 const fcm = getMessaging();
 
-const addNewData = async (data, collection) => {
+export const addNewData = async (data, collection) => {
     const docRef = db.collection(collection).doc();
-    
+
     try {
-        
         const payload = {
             timestamp:Date.now(),
             ...data
         }
 
         await docRef.set(payload);    
-
         return payload;
+
     } catch (error) {
         console.log(error);
     }
@@ -31,7 +35,7 @@ const addNewData = async (data, collection) => {
 }
 
 
-const sendNotification =  async (data) => {
+export const sendNotification =  async (data) => {
 
     const topics = data.topics;
     
@@ -59,7 +63,3 @@ const sendNotification =  async (data) => {
         return false;
     }
 }
-export {
-    addNewData,sendNotification
-}
-

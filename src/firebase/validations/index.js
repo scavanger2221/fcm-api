@@ -1,4 +1,4 @@
-import createNotificationSchema from "./create.notification.schema.js";
+import createNotificationSchema from "./create.notification.schema";
 
 export {
     createNotificationSchema

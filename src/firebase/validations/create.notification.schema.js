@@ -29,7 +29,9 @@ const createNotificationSchema = checkSchema({
         },
     },
     data:{
-        isObject: true,
+        isObject: {
+            errorMessage: "Data must be an object",
+        },
         optional: true
     },
     topics: {
