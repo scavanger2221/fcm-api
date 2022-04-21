@@ -21,7 +21,7 @@ const addNewData = async (data, collection) => {
             ...data
         }
 
-        const result = await docRef.set(payload);    
+        await docRef.set(payload);    
 
         return payload;
     } catch (error) {
