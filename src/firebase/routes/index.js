@@ -7,7 +7,10 @@ const router = Router();
 
 router.route('api');
 
-router.post("/notification/", createNotificationSchema, async (req, res) => {
+router.post("/notification/:app", createNotificationSchema, async (req, res) => {
+
+    console.log(req.params.app);
+
     const errors = validationResult(req);
   
     if (!errors.isEmpty()) {
@@ -16,9 +19,11 @@ router.post("/notification/", createNotificationSchema, async (req, res) => {
   
     const payload = matchedData(req);
   
-    const newData = await addNewData(payload, "notifications");
+    const app = req.params.app;
+
+    const newData = await addNewData(payload, "notifications", app);
     //send notification
-    await sendNotification(payload);
+    await sendNotification(payload, app);
   
     res.send(newData);
   });

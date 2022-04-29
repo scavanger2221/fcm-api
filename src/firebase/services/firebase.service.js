@@ -3,21 +3,40 @@ import {getFirestore} from "firebase-admin/firestore";
 import {getMessaging} from "firebase-admin/messaging";
 import {firebaseConfig} from "../../config/firebase";
 
-try {
-    initializeApp({
-        credential:cert(firebaseConfig),
-    });    
-} catch (error) {
-    alert(error);
-}
 
+const initApp = () => {
 
-const db = getFirestore();
+    const app = {}
+    const db = {}
+    const messaging = {}
 
-const fcm = getMessaging();
+    try {
+        for(let key of Object.keys(firebaseConfig)) {
+            app[key] = initializeApp({
+                credential: cert(firebaseConfig[key]),
+            }, key);
+            
 
-export const addNewData = async (data, collection) => {
-    const docRef = db.collection(collection).doc();
+            db[key] = getFirestore(app[key]);
+            messaging[key] = getMessaging(app[key]);
+        } 
+
+        return {
+            db: db,
+            messaging: messaging,
+        }
+
+    }catch(err){
+        console.log(err);
+    }
+
+};
+
+const {db, messaging} = initApp();
+
+export const addNewData = async (data, collection, app) => {
+
+    const docRef = db[app].collection(collection).doc();
 
     try {
         const payload = {
@@ -34,9 +53,7 @@ export const addNewData = async (data, collection) => {
     
 }
 
-
-export const sendNotification =  async (data) => {
-
+export const sendNotification =  async (data, app) => {
     const topics = data.topics;
     
     const message = {
@@ -50,7 +67,7 @@ export const sendNotification =  async (data) => {
 
     try {
         topics.forEach(topic => {
-            fcm.sendToTopic(topic, message)
+            messaging[app].sendToTopic(topic, message)
                 .then(function(response) {
                     console.log("Successfully sent message:", response);
                 })

@@ -1,8 +1,17 @@
 
 import {checkSchema} from "express-validator";
+import { firebaseConfig } from "../../config/firebase";
 
 
 const createNotificationSchema = checkSchema({
+    app : {
+        in : ["params"],
+        contains:{
+            options : Object.keys(firebaseConfig),
+            errorMessage : "Invalid app name",
+            bail : true
+        }
+    },
     clickable: {
         optional: true,
         isBoolean: {
@@ -17,7 +26,6 @@ const createNotificationSchema = checkSchema({
         isString: {
             errorMessage: "Title must be a string"
         },
-        
     },
     message: {
         notEmpty: {
