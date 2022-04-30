@@ -7,10 +7,23 @@ dotenv.config();
 
 const __dirname = path.resolve();
 
-//load config file
-const varashConfigBuffer= readFileSync(__dirname+"/"+process.env.FIREBASE_VARASH_CONFIG);
-const varashConfig = varashConfigBuffer.toString('ascii');
-
-export const firebaseConfig = {
-    varash: JSON.parse(varashConfig),
+const getConfigFromFile = (file) => {
+    const configBuffer =  readFileSync(__dirname+"/"+file);
+    const config = configBuffer.toString('ascii');
+    return JSON.parse(config);
 }
+
+const createConfig = (config) => {
+    const configs = {};
+    for(let key of Object.keys(config)) {
+        const configFile = getConfigFromFile(config[key]);
+        configs[key] = configFile;
+    }
+    return configs;
+}
+
+const config  = {
+    varash:process.env.FIREBASE_VARASH_CONFIG,
+}
+
+export const firebaseConfig = createConfig(config);

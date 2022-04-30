@@ -5,8 +5,6 @@ import { createNotificationSchema } from "../validations";
 
 const router = Router();
 
-router.route('api');
-
 router.post("/notification/:app", createNotificationSchema, async (req, res) => {
 
     console.log(req.params.app);
